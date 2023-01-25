@@ -341,7 +341,3 @@ bcftools annotate --rename-chrs ChrNames.txt in.vcf.gz
 
 <!--chapter:end:03-SNPfiltering.Rmd-->
 
-# Last Chapter
-
-<!--chapter:end:04-NewPage.Rmd-->
-
