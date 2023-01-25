@@ -179,7 +179,7 @@ SNPs and INDELs present at the same loci will then be merged independently (SNPs
 Since half-missing genotypes (ex: `./1`, `0|.`) can be tricky to handle for some softwares, one can convert them to fully missing with bcftools. Because bcftools does not deal with half-missing phased genotypes (`0|.`), the phased genotypes must first be set to unphased:  
 ```bcftools +setGT -- -t a -n u | bcftools +setGT -- -t ./x -n . ```
 
-Finally, because some known genotypes are set to missing, it is possible that some alleles are not present in the population anymore. These loci must be filtered out with `bcftools norm -m -any in.vcf.gz | bcftools +fill-tags | bcftools view --min-ac 1 | bcftools norm -m +any`. Multiallelic loci are split and then filtered for allele count because one allele can be lost while the other remains. 
+Finally, because some known genotypes are set to missing, it is possible that some alleles are not present in the population anymore. These loci must be filtered out with `bcftools norm -m -any in.vcf.gz | bcftools +fill-tags | bcftools view --min-ac 1 | bcftools norm -m +any`. Multiallelic loci are split and then filtered for allele count because one allele can be lost while the other remains. For INDELs filtering, an additional `bcftools view -v indels` command must be used to remove loci that contained both indel and overlapping variant (`ALT = *,CAA`) and where the indel was set to missing, leaving only `*` as alternative allele.
 
 ``` {bash, eval=F}
 # Keep only SNPs
@@ -205,7 +205,8 @@ bcftools norm --atomize --atom-overlaps \. -m -any --fasta-ref reference.fasta i
     bcftools norm -m -any | \
     bcftools +fill-tags | \
     bcftools view --min-ac 1 | \
-    bcftools norm -m +any
+    bcftools norm -m +any | \
+    bcftools view -v indels
 ```
 
 ## Filtering biallelic sites
