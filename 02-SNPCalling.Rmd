@@ -1,0 +1,5 @@
+# SNPs and INDELs calling
+
+For variant calling, please follow instructions on this page: <https://gatk.broadinstitute.org/hc/en-us/articles/360035890411-Calling-variants-on-cohorts-of-samples-using-the-HaplotypeCaller-in-GVCF-mode>
+
+The final step (4. Variant recalibration) does not have to be done.

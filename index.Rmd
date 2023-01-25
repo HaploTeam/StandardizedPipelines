@@ -1,0 +1,25 @@
+--- 
+title: "Standardized pipelines"
+author: "Victor Loegler"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: "This book contains the standardized pipelines used in the HaploTeam."
+---
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy() # Allow to copy code on click
+```
+
+# Introduction {-}
+
+```{r, eval=T, echo=F, out.width="25%", fig.align = 'center'}
+knitr::include_graphics("HaploTeamLogo.png", dpi = 2)
+```
+
+This book references all the bioinformatics standardized pipelines of the HaploTeam. All pipelines that are widely used across multiple projects can be described here. The purpose of this book is to improve reproducibility of the analyses by using the same protocols for recurring tasks, such as short sequencing reads mapping or SNP filtering. 

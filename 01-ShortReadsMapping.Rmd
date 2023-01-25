@@ -1,0 +1,31 @@
+# Short reads mapping
+
+Required softwares:
+
+-   bwa-mem2 (bwa mem can be used, but is slower)
+-   samtools
+-   gatk
+
+Short reads mapping have to be done with `bwa-mem2 mem` (or `bwa mem`) default parameters. The output of bwa can be pipped with `samtools sort` to output a sorted bam. The `-T` option allow to give a specific name to temporary files created for the sorting, which allows to sort multiple fasta in parallel in the same directory without any name conflicts.
+
+```{bash, eval=F}
+# Create reference index
+bwa-mem2 index reference.fasta
+
+# Run mapping
+bwa-mem2 mem -t 20 reference.fasta IlluminaReads_1.fq/fa IlluminaReads_2.fq/fa | samtools sort -o output.bam -T reads.Prefix.tmp
+```
+
+Once the BAM file is generated, one can add ReadGroups (required for some downstream analyses) with `gatk AddOrReplaceReadGroups`.
+
+```{bash, eval=F}
+# Add read groups
+gatk AddOrReplaceReadGroups -I input.bam -O output.bam --RGID SampleName --RGLB SampleName --RGPL ILLUMINA --RGPU SampleName --RGSM SampleName
+```
+
+Finally, the bam file have to be indexed with `samtools index`.
+
+```{bash, eval=F}
+# Index BAM
+samtools index input.bam
+```
