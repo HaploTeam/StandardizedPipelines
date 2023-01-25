@@ -12,6 +12,7 @@ git clone https://github.com/HaploTeam/StandardizedPipelines
 Modify anything you want (add pages, modify existing ones, etc) and regenerate the book with Rstudio (open R project and then Build > Build All). Then, update the git repository. 
 
 ```{bash}
+cd StandardizedPipelines
 git add .
 git commit -m "New commit"
 git push -u origin main
