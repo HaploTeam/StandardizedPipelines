@@ -130,37 +130,19 @@ The raw VCF will be split in 2 VCF: one containing only strict SNPs (no INDEL pr
 
 Another method is to set every non wanted variant as missing. The final SNP VCF will contain all the SNPs present in the population, and the non filtered INDELs (that is the one present at mixed loci) will be set to missing. It will be the other way around for the INDEL VCF. 
 
+#### /!\ Strict method mut be favored
 
 ### The strict method {-}
 
-First, complex variants have be left-aligned and broken down with `bcftools norm --atomize --atom-overlaps \. --fasta-ref reference.fasta`. `--atomize` split MNPS into consecutive SNPs, `--fasta-ref` left-align variants and `--atom-overlaps \.` willallow to not add an `*` alt allele at each multiallelic position (will use the `.` character insted, which will disappear once we'll merge multiallelic variants again). 
-This will allow to change  
-
-|  POS  |  REF  |  ALT  |
-|:-----:|:-----:|:-----:|
-|  1    | AAGCA | AAGCT |
-
-to
-
-|  POS  |  REF  |  ALT  |
-|:-----:|:-----:|:-----:|
-| 5     |   A   |   T   |
-
-Since the position of the variant changed, and another variant can also be at this position, the command `bcftools norm -m +any` must be used to merge variants variants at a single position. 
-
-Then, all sites with `*` as genotype or not `SNP`as type will be excluded with the command `bcftools view -e 'ALT="*" || type!="snp"'`. 
+For SNPs, all sites with `*` as genotype (= position is overlapping a deletion) or not `SNP`as type will be excluded with the command `bcftools view -e 'ALT="*" || type!="snp"'`. 
 For INDELs, loci containing SNPs can just be removed with `bcftools view -V snps,mnps,bnd,other`. `*` alleles will be kept as they should be INDELs. 
 
 ``` {bash, eval=F}
 # Keep only SNPs
-bcftools norm --atomize --atom-overlaps \. --fasta-ref ref.fasta in.vcf.gz | \
-  bcftools norm -m +any | \
-  bcftools view -e 'ALT="*" || type!="snp"'
+bcftools view -e 'ALT="*" || type!="snp"'
 
 # Keep only INDELs
-bcftools norm --atomize --atom-overlaps \. --fasta-ref ref.fasta in.vcf.gz | \
-  bcftools norm -m +any | \
-  bcftools view -V snps,mnps,bnd,other
+bcftools view -V snps,mnps,bnd,other
 ```
 
 ### The complex method {-}

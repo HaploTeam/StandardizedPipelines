@@ -23,7 +23,7 @@
 <meta name="author" content="Victor Loegler" />
 
 
-<meta name="date" content="2023-01-25" />
+<meta name="date" content="2023-02-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -227,55 +227,18 @@ This makes the dicrimination between SNPs and INDELs very complex.</p>
 <li><strong>The complex method</strong></li>
 </ul>
 <p>Another method is to set every non wanted variant as missing. The final SNP VCF will contain all the SNPs present in the population, and the non filtered INDELs (that is the one present at mixed loci) will be set to missing. It will be the other way around for the INDEL VCF.</p>
+<div id="strict-method-mut-be-favored" class="section level4 hasAnchor" number="3.3.0.1">
+<h4><span class="header-section-number">3.3.0.1</span> /! Strict method mut be favored<a href="snp-and-indel-filtering.html#strict-method-mut-be-favored" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+</div>
 <div id="the-strict-method" class="section level3 unnumbered hasAnchor">
 <h3>The strict method<a href="snp-and-indel-filtering.html#the-strict-method" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>First, complex variants have be left-aligned and broken down with <code>bcftools norm --atomize --atom-overlaps \. --fasta-ref reference.fasta</code>. <code>--atomize</code> split MNPS into consecutive SNPs, <code>--fasta-ref</code> left-align variants and <code>--atom-overlaps \.</code> willallow to not add an <code>*</code> alt allele at each multiallelic position (will use the <code>.</code> character insted, which will disappear once we’ll merge multiallelic variants again).
-This will allow to change</p>
-<table>
-<thead>
-<tr class="header">
-<th align="center">POS</th>
-<th align="center">REF</th>
-<th align="center">ALT</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">1</td>
-<td align="center">AAGCA</td>
-<td align="center">AAGCT</td>
-</tr>
-</tbody>
-</table>
-<p>to</p>
-<table>
-<thead>
-<tr class="header">
-<th align="center">POS</th>
-<th align="center">REF</th>
-<th align="center">ALT</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">5</td>
-<td align="center">A</td>
-<td align="center">T</td>
-</tr>
-</tbody>
-</table>
-<p>Since the position of the variant changed, and another variant can also be at this position, the command <code>bcftools norm -m +any</code> must be used to merge variants variants at a single position.</p>
-<p>Then, all sites with <code>*</code> as genotype or not <code>SNP</code>as type will be excluded with the command <code>bcftools view -e 'ALT="*" || type!="snp"'</code>.
+<p>For SNPs, all sites with <code>*</code> as genotype (= position is overlapping a deletion) or not <code>SNP</code>as type will be excluded with the command <code>bcftools view -e 'ALT="*" || type!="snp"'</code>.
 For INDELs, loci containing SNPs can just be removed with <code>bcftools view -V snps,mnps,bnd,other</code>. <code>*</code> alleles will be kept as they should be INDELs.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="snp-and-indel-filtering.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only SNPs</span></span>
-<span id="cb6-2"><a href="snp-and-indel-filtering.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> norm <span class="at">--atomize</span> <span class="at">--atom-overlaps</span> <span class="dt">\.</span> <span class="at">--fasta-ref</span> ref.fasta in.vcf.gz <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb6-3"><a href="snp-and-indel-filtering.html#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> norm <span class="at">-m</span> +any <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb6-4"><a href="snp-and-indel-filtering.html#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> view <span class="at">-e</span> <span class="st">&#39;ALT=&quot;*&quot; || type!=&quot;snp&quot;&#39;</span></span>
-<span id="cb6-5"><a href="snp-and-indel-filtering.html#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="snp-and-indel-filtering.html#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only INDELs</span></span>
-<span id="cb6-7"><a href="snp-and-indel-filtering.html#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> norm <span class="at">--atomize</span> <span class="at">--atom-overlaps</span> <span class="dt">\.</span> <span class="at">--fasta-ref</span> ref.fasta in.vcf.gz <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb6-8"><a href="snp-and-indel-filtering.html#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> norm <span class="at">-m</span> +any <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb6-9"><a href="snp-and-indel-filtering.html#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> view <span class="at">-V</span> snps,mnps,bnd,other</span></code></pre></div>
+<span id="cb6-2"><a href="snp-and-indel-filtering.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-e</span> <span class="st">&#39;ALT=&quot;*&quot; || type!=&quot;snp&quot;&#39;</span></span>
+<span id="cb6-3"><a href="snp-and-indel-filtering.html#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="snp-and-indel-filtering.html#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only INDELs</span></span>
+<span id="cb6-5"><a href="snp-and-indel-filtering.html#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-V</span> snps,mnps,bnd,other</span></code></pre></div>
 </div>
 <div id="the-complex-method" class="section level3 unnumbered hasAnchor">
 <h3>The complex method<a href="snp-and-indel-filtering.html#the-complex-method" class="anchor-section" aria-label="Anchor link to header"></a></h3>
