@@ -60,7 +60,7 @@ The raw VCF will be split in 2 VCF: one containing only strict SNPs (no INDEL pr
 
 Another method is to set every non wanted variant as missing. The final SNP VCF will contain all the SNPs present in the population, and the non filtered INDELs (that is the one present at mixed loci) will be set to missing. It will be the other way around for the INDEL VCF. 
 
-#### /!\\ Strict method mut be favored {-}
+#### /!\\ Strict method must be favored {-}
 
 ### The strict method {-}
 
