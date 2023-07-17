@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 SNPs and INDELs calling | Standardized pipelines</title>
   <meta name="description" content="This book contains the standardized pipelines used in the HaploTeam." />
-  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 SNPs and INDELs calling | Standardized pipelines" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Victor Loegler" />
 
 
-<meta name="date" content="2023-02-14" />
+<meta name="date" content="2023-07-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -123,6 +123,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -147,16 +151,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="3.1" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#quality-filtering"><i class="fa fa-check"></i><b>3.1</b> Quality filtering</a></li>
 <li class="chapter" data-level="3.2" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#sample-filtering"><i class="fa fa-check"></i><b>3.2</b> Sample filtering</a></li>
-<li class="chapter" data-level="3.3" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#split-snps-and-indels"><i class="fa fa-check"></i><b>3.3</b> Split SNPs and INDELs</a>
-<ul>
-<li class="chapter" data-level="" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#the-strict-method"><i class="fa fa-check"></i>The strict method</a></li>
-<li class="chapter" data-level="" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#the-complex-method"><i class="fa fa-check"></i>The complex method</a></li>
-</ul></li>
-<li class="chapter" data-level="3.4" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-biallelic-sites"><i class="fa fa-check"></i><b>3.4</b> Filtering biallelic sites</a></li>
-<li class="chapter" data-level="3.5" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filter-missing-genotypes"><i class="fa fa-check"></i><b>3.5</b> Filter missing genotypes</a></li>
-<li class="chapter" data-level="3.6" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-the-maf"><i class="fa fa-check"></i><b>3.6</b> Filtering the MAF</a></li>
-<li class="chapter" data-level="3.7" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#annotate-variant-id"><i class="fa fa-check"></i><b>3.7</b> Annotate variant ID</a></li>
-<li class="chapter" data-level="3.8" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#change-chromosome-names"><i class="fa fa-check"></i><b>3.8</b> Change chromosome names</a></li>
+<li class="chapter" data-level="3.3" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#missing-genotype-filtering"><i class="fa fa-check"></i><b>3.3</b> Missing genotype filtering</a></li>
+<li class="chapter" data-level="3.4" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filter-on-excess-of-heterozygosity"><i class="fa fa-check"></i><b>3.4</b> Filter on excess of heterozygosity</a></li>
+<li class="chapter" data-level="3.5" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#split-snps-and-indels"><i class="fa fa-check"></i><b>3.5</b> Split SNPs and INDELs</a></li>
+<li class="chapter" data-level="3.6" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filter-variant-position"><i class="fa fa-check"></i><b>3.6</b> Filter variant position</a></li>
+<li class="chapter" data-level="3.7" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-biallelic-sites"><i class="fa fa-check"></i><b>3.7</b> Filtering biallelic sites</a></li>
+<li class="chapter" data-level="3.8" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-the-maf"><i class="fa fa-check"></i><b>3.8</b> Filtering the MAF</a></li>
+<li class="chapter" data-level="3.9" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#annotate-variant-id"><i class="fa fa-check"></i><b>3.9</b> Annotate variant ID</a></li>
+<li class="chapter" data-level="3.10" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#change-chromosome-names"><i class="fa fa-check"></i><b>3.10</b> Change chromosome names</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -182,6 +184,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 2</span> SNPs and INDELs calling<a href="snps-and-indels-calling.html#snps-and-indels-calling" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>For variant calling, please follow instructions on this page: <a href="https://gatk.broadinstitute.org/hc/en-us/articles/360035890411-Calling-variants-on-cohorts-of-samples-using-the-HaplotypeCaller-in-GVCF-mode" class="uri">https://gatk.broadinstitute.org/hc/en-us/articles/360035890411-Calling-variants-on-cohorts-of-samples-using-the-HaplotypeCaller-in-GVCF-mode</a></p>
 <p>The final step (4. Variant recalibration) does not have to be done.</p>
+<p>For many tools, it is better to have allposition in the final VCF (even non variant positions), which can be obtained using the <code>--include-non-variant-sites</code> when using the <code>gatk GenotypeGVCFs</code> command.</p>
 
 </div>
             </section>

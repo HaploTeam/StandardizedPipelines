@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 1 Short reads mapping | Standardized pipelines</title>
   <meta name="description" content="This book contains the standardized pipelines used in the HaploTeam." />
-  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 1 Short reads mapping | Standardized pipelines" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Victor Loegler" />
 
 
-<meta name="date" content="2023-02-14" />
+<meta name="date" content="2023-07-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -123,6 +123,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -147,16 +151,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="3.1" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#quality-filtering"><i class="fa fa-check"></i><b>3.1</b> Quality filtering</a></li>
 <li class="chapter" data-level="3.2" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#sample-filtering"><i class="fa fa-check"></i><b>3.2</b> Sample filtering</a></li>
-<li class="chapter" data-level="3.3" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#split-snps-and-indels"><i class="fa fa-check"></i><b>3.3</b> Split SNPs and INDELs</a>
-<ul>
-<li class="chapter" data-level="" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#the-strict-method"><i class="fa fa-check"></i>The strict method</a></li>
-<li class="chapter" data-level="" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#the-complex-method"><i class="fa fa-check"></i>The complex method</a></li>
-</ul></li>
-<li class="chapter" data-level="3.4" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-biallelic-sites"><i class="fa fa-check"></i><b>3.4</b> Filtering biallelic sites</a></li>
-<li class="chapter" data-level="3.5" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filter-missing-genotypes"><i class="fa fa-check"></i><b>3.5</b> Filter missing genotypes</a></li>
-<li class="chapter" data-level="3.6" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-the-maf"><i class="fa fa-check"></i><b>3.6</b> Filtering the MAF</a></li>
-<li class="chapter" data-level="3.7" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#annotate-variant-id"><i class="fa fa-check"></i><b>3.7</b> Annotate variant ID</a></li>
-<li class="chapter" data-level="3.8" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#change-chromosome-names"><i class="fa fa-check"></i><b>3.8</b> Change chromosome names</a></li>
+<li class="chapter" data-level="3.3" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#missing-genotype-filtering"><i class="fa fa-check"></i><b>3.3</b> Missing genotype filtering</a></li>
+<li class="chapter" data-level="3.4" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filter-on-excess-of-heterozygosity"><i class="fa fa-check"></i><b>3.4</b> Filter on excess of heterozygosity</a></li>
+<li class="chapter" data-level="3.5" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#split-snps-and-indels"><i class="fa fa-check"></i><b>3.5</b> Split SNPs and INDELs</a></li>
+<li class="chapter" data-level="3.6" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filter-variant-position"><i class="fa fa-check"></i><b>3.6</b> Filter variant position</a></li>
+<li class="chapter" data-level="3.7" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-biallelic-sites"><i class="fa fa-check"></i><b>3.7</b> Filtering biallelic sites</a></li>
+<li class="chapter" data-level="3.8" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-the-maf"><i class="fa fa-check"></i><b>3.8</b> Filtering the MAF</a></li>
+<li class="chapter" data-level="3.9" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#annotate-variant-id"><i class="fa fa-check"></i><b>3.9</b> Annotate variant ID</a></li>
+<li class="chapter" data-level="3.10" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#change-chromosome-names"><i class="fa fa-check"></i><b>3.10</b> Change chromosome names</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -187,17 +189,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>gatk</li>
 </ul>
 <p>Short reads mapping have to be done with <code>bwa-mem2 mem</code> (or <code>bwa mem</code>) default parameters. The output of bwa can be pipped with <code>samtools sort</code> to output a sorted bam. The <code>-T</code> option allow to give a specific name to temporary files created for the sorting, which allows to sort multiple fasta in parallel in the same directory without any name conflicts.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="short-reads-mapping.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create reference index</span></span>
-<span id="cb1-2"><a href="short-reads-mapping.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bwa-mem2</span> index reference.fasta</span>
-<span id="cb1-3"><a href="short-reads-mapping.html#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="short-reads-mapping.html#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run mapping</span></span>
-<span id="cb1-5"><a href="short-reads-mapping.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">bwa-mem2</span> mem <span class="at">-t</span> 20 reference.fasta IlluminaReads_1.fq/fa IlluminaReads_2.fq/fa <span class="kw">|</span> <span class="ex">samtools</span> sort <span class="at">-o</span> output.bam <span class="at">-T</span> reads.Prefix.tmp</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="short-reads-mapping.html#cb1-1" tabindex="-1"></a><span class="co"># Create reference index</span></span>
+<span id="cb1-2"><a href="short-reads-mapping.html#cb1-2" tabindex="-1"></a><span class="ex">bwa-mem2</span> index reference.fasta</span>
+<span id="cb1-3"><a href="short-reads-mapping.html#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="short-reads-mapping.html#cb1-4" tabindex="-1"></a><span class="co"># Run mapping</span></span>
+<span id="cb1-5"><a href="short-reads-mapping.html#cb1-5" tabindex="-1"></a><span class="ex">bwa-mem2</span> mem <span class="at">-t</span> 20 reference.fasta IlluminaReads_1.fq/fa IlluminaReads_2.fq/fa <span class="kw">|</span> <span class="ex">samtools</span> sort <span class="at">-o</span> output.bam <span class="at">-T</span> reads.Prefix.tmp</span></code></pre></div>
 <p>Once the BAM file is generated, one can add ReadGroups (required for some downstream analyses) with <code>gatk AddOrReplaceReadGroups</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="short-reads-mapping.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add read groups</span></span>
-<span id="cb2-2"><a href="short-reads-mapping.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gatk</span> AddOrReplaceReadGroups <span class="at">-I</span> input.bam <span class="at">-O</span> output.bam <span class="at">--RGID</span> SampleName <span class="at">--RGLB</span> SampleName <span class="at">--RGPL</span> ILLUMINA <span class="at">--RGPU</span> SampleName <span class="at">--RGSM</span> SampleName</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="short-reads-mapping.html#cb2-1" tabindex="-1"></a><span class="co"># Add read groups</span></span>
+<span id="cb2-2"><a href="short-reads-mapping.html#cb2-2" tabindex="-1"></a><span class="ex">gatk</span> AddOrReplaceReadGroups <span class="at">-I</span> input.bam <span class="at">-O</span> output.bam <span class="at">--RGID</span> SampleName <span class="at">--RGLB</span> SampleName <span class="at">--RGPL</span> ILLUMINA <span class="at">--RGPU</span> SampleName <span class="at">--RGSM</span> SampleName</span></code></pre></div>
 <p>Finally, the bam file have to be indexed with <code>samtools index</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="short-reads-mapping.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Index BAM</span></span>
-<span id="cb3-2"><a href="short-reads-mapping.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> index input.bam</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="short-reads-mapping.html#cb3-1" tabindex="-1"></a><span class="co"># Index BAM</span></span>
+<span id="cb3-2"><a href="short-reads-mapping.html#cb3-2" tabindex="-1"></a><span class="ex">samtools</span> index input.bam</span></code></pre></div>
 
 </div>
             </section>

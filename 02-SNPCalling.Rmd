@@ -3,3 +3,5 @@
 For variant calling, please follow instructions on this page: <https://gatk.broadinstitute.org/hc/en-us/articles/360035890411-Calling-variants-on-cohorts-of-samples-using-the-HaplotypeCaller-in-GVCF-mode>
 
 The final step (4. Variant recalibration) does not have to be done.
+
+For many tools, it is better to have allposition in the final VCF (even non variant positions), which can be obtained using the `--include-non-variant-sites` when using the `gatk GenotypeGVCFs` command. 

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 3 SNP and INDEL filtering | Standardized pipelines</title>
   <meta name="description" content="This book contains the standardized pipelines used in the HaploTeam." />
-  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 3 SNP and INDEL filtering | Standardized pipelines" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Victor Loegler" />
 
 
-<meta name="date" content="2023-02-14" />
+<meta name="date" content="2023-07-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -123,6 +123,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -147,16 +151,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="3.1" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#quality-filtering"><i class="fa fa-check"></i><b>3.1</b> Quality filtering</a></li>
 <li class="chapter" data-level="3.2" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#sample-filtering"><i class="fa fa-check"></i><b>3.2</b> Sample filtering</a></li>
-<li class="chapter" data-level="3.3" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#split-snps-and-indels"><i class="fa fa-check"></i><b>3.3</b> Split SNPs and INDELs</a>
-<ul>
-<li class="chapter" data-level="" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#the-strict-method"><i class="fa fa-check"></i>The strict method</a></li>
-<li class="chapter" data-level="" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#the-complex-method"><i class="fa fa-check"></i>The complex method</a></li>
-</ul></li>
-<li class="chapter" data-level="3.4" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-biallelic-sites"><i class="fa fa-check"></i><b>3.4</b> Filtering biallelic sites</a></li>
-<li class="chapter" data-level="3.5" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filter-missing-genotypes"><i class="fa fa-check"></i><b>3.5</b> Filter missing genotypes</a></li>
-<li class="chapter" data-level="3.6" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-the-maf"><i class="fa fa-check"></i><b>3.6</b> Filtering the MAF</a></li>
-<li class="chapter" data-level="3.7" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#annotate-variant-id"><i class="fa fa-check"></i><b>3.7</b> Annotate variant ID</a></li>
-<li class="chapter" data-level="3.8" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#change-chromosome-names"><i class="fa fa-check"></i><b>3.8</b> Change chromosome names</a></li>
+<li class="chapter" data-level="3.3" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#missing-genotype-filtering"><i class="fa fa-check"></i><b>3.3</b> Missing genotype filtering</a></li>
+<li class="chapter" data-level="3.4" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filter-on-excess-of-heterozygosity"><i class="fa fa-check"></i><b>3.4</b> Filter on excess of heterozygosity</a></li>
+<li class="chapter" data-level="3.5" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#split-snps-and-indels"><i class="fa fa-check"></i><b>3.5</b> Split SNPs and INDELs</a></li>
+<li class="chapter" data-level="3.6" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filter-variant-position"><i class="fa fa-check"></i><b>3.6</b> Filter variant position</a></li>
+<li class="chapter" data-level="3.7" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-biallelic-sites"><i class="fa fa-check"></i><b>3.7</b> Filtering biallelic sites</a></li>
+<li class="chapter" data-level="3.8" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#filtering-the-maf"><i class="fa fa-check"></i><b>3.8</b> Filtering the MAF</a></li>
+<li class="chapter" data-level="3.9" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#annotate-variant-id"><i class="fa fa-check"></i><b>3.9</b> Annotate variant ID</a></li>
+<li class="chapter" data-level="3.10" data-path="snp-and-indel-filtering.html"><a href="snp-and-indel-filtering.html#change-chromosome-names"><i class="fa fa-check"></i><b>3.10</b> Change chromosome names</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -180,24 +182,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="snp-and-indel-filtering" class="section level1 hasAnchor" number="3">
 <h1><span class="header-section-number">Chapter 3</span> SNP and INDEL filtering<a href="snp-and-indel-filtering.html#snp-and-indel-filtering" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>This chapter contains bcftools commands to filter multi sample VCF files. These commands were tested using bcftools 1.15.1.
-bcftools manual:
-<a href="https://samtools.github.io/bcftools/bcftools.html">https://samtools.github.io/bcftools/bcftools.html</a></p>
-<p>The order in which the commands are executed must be respected. The raw VCF should first be filtered on the genotyping quality, then a subset of samples can be filtered if needed and finally several filters can be applied on the variants dataset (missing genotype filters, frequency filters, biallelic filters, etc).</p>
+<p>This chapter contains bcftools commands to filter multi sample VCF files. These commands were tested using bcftools 1.15.1. bcftools manual: <a href="https://samtools.github.io/bcftools/bcftools.html" class="uri">https://samtools.github.io/bcftools/bcftools.html</a></p>
+<p>The order in which the commands are executed must be respected. The raw VCF should first be filtered on the genotyping quality, then a subset of samples can be filtered if needed and finally several filters can be applied on the variants dataset (missing genotype filters, frequency filters, biallelic filters, etc). It is better to work with all-position VCFs, and filter variant position only in the end.</p>
 <p>WARNING: Each filter must be indicated in the file name. Example: <code>full2489Samples.DP10.GQ20.SNPs.99pNonMissing.Biallelic.MAF5.vcf.gz</code></p>
 <p>The different commands can be combined with <code>|</code>. To accelerate the compression of the output VCF, the command <code>bcftools view -Oz -o out.vcf.gz --threads 8</code>can be used to parallelize the compression of the file.</p>
 <div id="quality-filtering" class="section level2 hasAnchor" number="3.1">
 <h2><span class="header-section-number">3.1</span> Quality filtering<a href="snp-and-indel-filtering.html#quality-filtering" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Quality filtering is the first step to process. It includes depth filtering, genotype quality or any other filters based on quality metrics (QUAL, allele balance, etc). Loci that does not pass the thresholds must be set to missing. The allele count for each loci must then be updated <code>bcftools +fill-tags</code> and only loci with allele count superior to 0 must be kept <code>bcftools view --min-ac 1</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="snp-and-indel-filtering.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Depth filtering 10X</span></span>
-<span id="cb4-2"><a href="snp-and-indel-filtering.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> +setGT in.vcf.gz <span class="at">--</span> <span class="at">-t</span> q <span class="at">-n</span> . <span class="at">-e</span> <span class="st">&#39;FMT/DP&gt;=10&#39;</span> <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb4-3"><a href="snp-and-indel-filtering.html#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> +fill-tags <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb4-4"><a href="snp-and-indel-filtering.html#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> view <span class="at">--min-ac</span> 1</span>
-<span id="cb4-5"><a href="snp-and-indel-filtering.html#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="snp-and-indel-filtering.html#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Genotype quality filtering 20</span></span>
-<span id="cb4-7"><a href="snp-and-indel-filtering.html#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> +setGT in.vcf.gz <span class="at">--</span> <span class="at">-t</span> q <span class="at">-n</span> . <span class="at">-e</span> <span class="st">&#39;FMT/GQ&gt;=20&#39;</span> <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb4-8"><a href="snp-and-indel-filtering.html#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> +fill-tags <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb4-9"><a href="snp-and-indel-filtering.html#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> view <span class="at">--min-ac</span> 1</span></code></pre></div>
+<p>Quality filtering is the first step to process. It includes depth filtering, genotype quality or any other filters based on quality metrics (QUAL, allele balance, etc). Loci that does not pass the thresholds must be set to missing. The allele count for each loci must then be updated <code>bcftools +fill-tags</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="snp-and-indel-filtering.html#cb4-1" tabindex="-1"></a><span class="co"># Depth filtering 10X</span></span>
+<span id="cb4-2"><a href="snp-and-indel-filtering.html#cb4-2" tabindex="-1"></a><span class="ex">bcftools</span> +setGT in.vcf.gz <span class="at">--</span> <span class="at">-t</span> q <span class="at">-n</span> . <span class="at">-e</span> <span class="st">&#39;FMT/DP&gt;=10&#39;</span> <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb4-3"><a href="snp-and-indel-filtering.html#cb4-3" tabindex="-1"></a>  <span class="ex">bcftools</span> +fill-tags</span>
+<span id="cb4-4"><a href="snp-and-indel-filtering.html#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="snp-and-indel-filtering.html#cb4-5" tabindex="-1"></a><span class="co"># Genotype quality filtering 20</span></span>
+<span id="cb4-6"><a href="snp-and-indel-filtering.html#cb4-6" tabindex="-1"></a><span class="ex">bcftools</span> +setGT in.vcf.gz <span class="at">--</span> <span class="at">-t</span> q <span class="at">-n</span> . <span class="at">-e</span> <span class="st">&#39;FMT/GQ&gt;=20&#39;</span> <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb4-7"><a href="snp-and-indel-filtering.html#cb4-7" tabindex="-1"></a>  <span class="ex">bcftools</span> +fill-tags</span></code></pre></div>
 </div>
 <div id="sample-filtering" class="section level2 hasAnchor" number="3.2">
 <h2><span class="header-section-number">3.2</span> Sample filtering<a href="snp-and-indel-filtering.html#sample-filtering" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -207,232 +205,90 @@ The <code>bcftools view --samples-file</code>command filters samples from a txt 
 The <code>bcftools +fill-tags</code> command updates the allele count value<br />
 The <code>bcftools view --min-ac 1</code> keeps only sites with a minimum allele count of 1<br />
 The <code>bcftools norm -m +any</code> command merge variant located at the same position</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="snp-and-indel-filtering.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample filtering</span></span>
-<span id="cb5-2"><a href="snp-and-indel-filtering.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> norm <span class="at">-m</span> <span class="at">-any</span> in.vcf.gz <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb5-3"><a href="snp-and-indel-filtering.html#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> view <span class="at">--samples-file</span> samples.txt <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb5-4"><a href="snp-and-indel-filtering.html#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> +fill-tags <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb5-5"><a href="snp-and-indel-filtering.html#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> view <span class="at">--min-ac</span> 1 <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb5-6"><a href="snp-and-indel-filtering.html#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">bcftools</span> norm <span class="at">-m</span> +any</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="snp-and-indel-filtering.html#cb5-1" tabindex="-1"></a><span class="co"># Sample filtering</span></span>
+<span id="cb5-2"><a href="snp-and-indel-filtering.html#cb5-2" tabindex="-1"></a><span class="ex">bcftools</span> norm <span class="at">-m</span> <span class="at">-any</span> in.vcf.gz <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb5-3"><a href="snp-and-indel-filtering.html#cb5-3" tabindex="-1"></a>  <span class="ex">bcftools</span> view <span class="at">--samples-file</span> samples.txt <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb5-4"><a href="snp-and-indel-filtering.html#cb5-4" tabindex="-1"></a>  <span class="ex">bcftools</span> +fill-tags <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb5-5"><a href="snp-and-indel-filtering.html#cb5-5" tabindex="-1"></a>  <span class="ex">bcftools</span> view <span class="at">--min-ac</span> 1 <span class="kw">|</span> <span class="ex">\ </span> <span class="co"># This command filter out non variant loci</span></span>
+<span id="cb5-6"><a href="snp-and-indel-filtering.html#cb5-6" tabindex="-1"></a>  <span class="ex">bcftools</span> norm <span class="at">-m</span> +any</span></code></pre></div>
 </div>
-<div id="split-snps-and-indels" class="section level2 hasAnchor" number="3.3">
-<h2><span class="header-section-number">3.3</span> Split SNPs and INDELs<a href="snp-and-indel-filtering.html#split-snps-and-indels" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>In raw VCFs, SNPs and INDELs can be hard to discriminate because they can be located at the same loci (called mixed loci). Some raw VCFs also contains MNVs (= Multiple Nucleotide Variants), that can be broken down in multiple consecutive SNPs.
-This makes the dicrimination between SNPs and INDELs very complex.</p>
-<p>This discrimination can be done in 2 ways:</p>
-<ul>
-<li><strong>The strict method</strong></li>
-</ul>
-<p>The raw VCF will be split in 2 VCF: one containing only strict SNPs (no INDEL present at these loci in the population), one containing only strict INDELs (no SNP present at these loci in the population). The mixed loci will be filtered out.</p>
-<ul>
-<li><strong>The complex method</strong></li>
-</ul>
-<p>Another method is to set every non wanted variant as missing. The final SNP VCF will contain all the SNPs present in the population, and the non filtered INDELs (that is the one present at mixed loci) will be set to missing. It will be the other way around for the INDEL VCF.</p>
-<div id="strict-method-must-be-favored" class="section level4 unnumbered hasAnchor">
-<h4>/!\ Strict method must be favored<a href="snp-and-indel-filtering.html#strict-method-must-be-favored" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="missing-genotype-filtering" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> Missing genotype filtering<a href="snp-and-indel-filtering.html#missing-genotype-filtering" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Multiple filters can be done on missing genotypes. First we can filter out samples having less than X% of informed loci. Fill-tags must be used since the number of samples changes.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="snp-and-indel-filtering.html#cb6-1" tabindex="-1"></a><span class="co"># Get for each sample the number of loci with missing genotype</span></span>
+<span id="cb6-2"><a href="snp-and-indel-filtering.html#cb6-2" tabindex="-1"></a><span class="ex">bcftools</span> stats <span class="at">-s</span> <span class="at">-</span> <span class="va">$PREFIX</span>.DP10.GQ20.vcf.gz <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> ^PSC <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-f3,14</span> <span class="op">&gt;</span> <span class="va">$PREFIX</span>.DP10.GQ20.imiss</span>
+<span id="cb6-3"><a href="snp-and-indel-filtering.html#cb6-3" tabindex="-1"></a><span class="co"># Get the total number of sites in the VCF</span></span>
+<span id="cb6-4"><a href="snp-and-indel-filtering.html#cb6-4" tabindex="-1"></a><span class="va">nSites</span><span class="op">=</span><span class="va">$(</span><span class="ex">bcftools</span> +counts <span class="va">$PREFIX</span>.DP10.GQ20.vcf.gz <span class="kw">|</span> <span class="fu">grep</span> <span class="st">&quot;Number of sites&quot;</span> <span class="kw">|</span> <span class="fu">rev</span> <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-d</span> <span class="st">&quot; &quot;</span> <span class="at">-f</span> 1 <span class="kw">|</span> <span class="fu">rev</span><span class="va">)</span></span>
+<span id="cb6-5"><a href="snp-and-indel-filtering.html#cb6-5" tabindex="-1"></a><span class="co"># List samples with less than 20% missing genotypes</span></span>
+<span id="cb6-6"><a href="snp-and-indel-filtering.html#cb6-6" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-v</span> nSites=<span class="va">$nSites</span> <span class="st">&#39;{if ($2 / nSites &lt;= 0.2) print $1}&#39;</span> <span class="va">$PREFIX</span>.DP10.GQ20.imiss <span class="op">&gt;</span> Samples.Mind20</span>
+<span id="cb6-7"><a href="snp-and-indel-filtering.html#cb6-7" tabindex="-1"></a><span class="co"># Filter samples</span></span>
+<span id="cb6-8"><a href="snp-and-indel-filtering.html#cb6-8" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">--samples-file</span> Samples.Mind20 <span class="va">$PREFIX</span>.DP10.GQ20.vcf.gz <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb6-9"><a href="snp-and-indel-filtering.html#cb6-9" tabindex="-1"></a>    <span class="ex">bcftools</span> +fill-tags</span></code></pre></div>
+<p>Then we can filter loci that are not informed for enough samples (ex: filter out loci that are informed for less than 99% of the samples).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="snp-and-indel-filtering.html#cb7-1" tabindex="-1"></a><span class="co"># Keep only sites with more than 99% of genotyped samples</span></span>
+<span id="cb7-2"><a href="snp-and-indel-filtering.html#cb7-2" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-i</span> <span class="st">&#39;F_MISSING&lt;0.01&#39;</span></span></code></pre></div>
 </div>
-<div id="the-strict-method" class="section level3 unnumbered hasAnchor">
-<h3>The strict method<a href="snp-and-indel-filtering.html#the-strict-method" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>For SNPs, all sites with <code>*</code> as genotype (= position is overlapping a deletion) or not <code>SNP</code>as type will be excluded with the command <code>bcftools view -e 'ALT="*" || type!="snp"'</code>.
-For INDELs, loci containing SNPs can just be removed with <code>bcftools view -V snps,mnps,bnd,other</code>. <code>*</code> alleles will be kept as they should be INDELs.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="snp-and-indel-filtering.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only SNPs</span></span>
-<span id="cb6-2"><a href="snp-and-indel-filtering.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-e</span> <span class="st">&#39;ALT=&quot;*&quot; || type!=&quot;snp&quot;&#39;</span></span>
-<span id="cb6-3"><a href="snp-and-indel-filtering.html#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="snp-and-indel-filtering.html#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only INDELs</span></span>
-<span id="cb6-5"><a href="snp-and-indel-filtering.html#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-V</span> snps,mnps,bnd,other</span></code></pre></div>
+<div id="filter-on-excess-of-heterozygosity" class="section level2 hasAnchor" number="3.4">
+<h2><span class="header-section-number">3.4</span> Filter on excess of heterozygosity<a href="snp-and-indel-filtering.html#filter-on-excess-of-heterozygosity" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Regions duplicated in some samples but in a single copy in the reference genome will often result in excess of heterozygosity. These regions can therefore be filtered with the ExcHet field, which tests for excess of heterozygosity and is calculated with fill-tags. This filter is usefull to avoid artificial increase in diversity caused by duplicated regions.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="snp-and-indel-filtering.html#cb8-1" tabindex="-1"></a><span class="ex">bcftools</span> +fill-tags <span class="kw">|</span> <span class="ex">bcftools</span> view <span class="at">-e</span> <span class="st">&#39;ExcHet &lt; 0.99&#39;</span></span></code></pre></div>
 </div>
-<div id="the-complex-method" class="section level3 unnumbered hasAnchor">
-<h3>The complex method<a href="snp-and-indel-filtering.html#the-complex-method" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>In order to use SNPs that are present at complex loci, INDELs present at those same loci must be set to missing. Since overlapping deletions (asterisk symbol, see <a href="https://gatk.broadinstitute.org/hc/en-us/articles/360035531912-Spanning-or-overlapping-deletions-allele-" class="uri">https://gatk.broadinstitute.org/hc/en-us/articles/360035531912-Spanning-or-overlapping-deletions-allele-</a> for a definition) are part of INDELs, it also have to be set to missing. However, bcftools does not handle well overlapping deletions. One can use an awk script to set every <code>*</code> allele to missing, with the command <code>awk -f setAsterisksToMissing.awk</code>, with <code>setAsterisksToMissing.awk</code> beeing this script:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode awk"><code class="sourceCode awk"><span id="cb7-1"><a href="snp-and-indel-filtering.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span><span class="op">{</span><span class="bu">FS</span><span class="op">=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span><span class="op">}</span></span>
-<span id="cb7-2"><a href="snp-and-indel-filtering.html#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="snp-and-indel-filtering.html#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># If field 5 (ALT column) contains *</span></span>
-<span id="cb7-4"><a href="snp-and-indel-filtering.html#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="dt">$5</span> <span class="op">~</span> <span class="ot">/\</span><span class="sc">*</span><span class="ot">/</span><span class="op">{</span></span>
-<span id="cb7-5"><a href="snp-and-indel-filtering.html#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define output field separator as tab</span></span>
-<span id="cb7-6"><a href="snp-and-indel-filtering.html#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">OFS</span><span class="op">=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span></span>
-<span id="cb7-7"><a href="snp-and-indel-filtering.html#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Split the ALT field by comma to have each individual alt allele</span></span>
-<span id="cb7-8"><a href="snp-and-indel-filtering.html#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">split</span><span class="op">(</span><span class="dt">$5</span><span class="op">,</span> ALT<span class="op">,</span> <span class="st">&quot;,&quot;</span><span class="op">)</span></span>
-<span id="cb7-9"><a href="snp-and-indel-filtering.html#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For i in 1:len(All alt alleles)</span></span>
-<span id="cb7-10"><a href="snp-and-indel-filtering.html#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i <span class="kw">in</span> ALT<span class="op">){</span></span>
-<span id="cb7-11"><a href="snp-and-indel-filtering.html#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If the alt allele contains *</span></span>
-<span id="cb7-12"><a href="snp-and-indel-filtering.html#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>ALT[i] <span class="op">~</span> <span class="ot">/\</span><span class="sc">*</span><span class="ot">/</span><span class="op">){</span></span>
-<span id="cb7-13"><a href="snp-and-indel-filtering.html#cb7-13" aria-hidden="true" tabindex="-1"></a>            asteriskIndex<span class="op">=</span>i</span>
-<span id="cb7-14"><a href="snp-and-indel-filtering.html#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb7-15"><a href="snp-and-indel-filtering.html#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb7-16"><a href="snp-and-indel-filtering.html#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Subsitute each asteriskIndex by &quot;.&quot; (missing genotype)</span></span>
-<span id="cb7-17"><a href="snp-and-indel-filtering.html#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i<span class="op">=</span><span class="dv">10</span><span class="op">;</span> i<span class="op">&lt;=</span><span class="bu">NF</span><span class="op">;</span> i<span class="op">++){</span></span>
-<span id="cb7-18"><a href="snp-and-indel-filtering.html#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Extract the genotype</span></span>
-<span id="cb7-19"><a href="snp-and-indel-filtering.html#cb7-19" aria-hidden="true" tabindex="-1"></a>        N<span class="op">=</span><span class="fu">split</span><span class="op">(</span><span class="dt">$i</span><span class="op">,</span> FORMAT<span class="op">,</span> <span class="st">&quot;:&quot;</span><span class="op">)</span></span>
-<span id="cb7-20"><a href="snp-and-indel-filtering.html#cb7-20" aria-hidden="true" tabindex="-1"></a>        GT<span class="op">=</span>FORMAT[<span class="dv">1</span>]</span>
-<span id="cb7-21"><a href="snp-and-indel-filtering.html#cb7-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If the genotype contains the asterisk index</span></span>
-<span id="cb7-22"><a href="snp-and-indel-filtering.html#cb7-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>GT <span class="op">~</span> asteriskIndex<span class="op">){</span></span>
-<span id="cb7-23"><a href="snp-and-indel-filtering.html#cb7-23" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Split the genotypes by / or | to access each haplotype independentely</span></span>
-<span id="cb7-24"><a href="snp-and-indel-filtering.html#cb7-24" aria-hidden="true" tabindex="-1"></a>            <span class="fu">split</span><span class="op">(</span>GT<span class="op">,</span> GTarray<span class="op">,</span> <span class="st">&quot;[/|]&quot;</span><span class="op">)</span></span>
-<span id="cb7-25"><a href="snp-and-indel-filtering.html#cb7-25" aria-hidden="true" tabindex="-1"></a>            GT1<span class="op">=</span>GTarray[<span class="dv">1</span>]</span>
-<span id="cb7-26"><a href="snp-and-indel-filtering.html#cb7-26" aria-hidden="true" tabindex="-1"></a>            GT2<span class="op">=</span>GTarray[<span class="dv">2</span>]</span>
-<span id="cb7-27"><a href="snp-and-indel-filtering.html#cb7-27" aria-hidden="true" tabindex="-1"></a>            <span class="co"># remove oll numbers from the genotype to know the seperator ( | phased or / unphased)</span></span>
-<span id="cb7-28"><a href="snp-and-indel-filtering.html#cb7-28" aria-hidden="true" tabindex="-1"></a>            SEP<span class="op">=</span>GT</span>
-<span id="cb7-29"><a href="snp-and-indel-filtering.html#cb7-29" aria-hidden="true" tabindex="-1"></a>            <span class="fu">gsub</span><span class="op">(</span><span class="ot">/[</span><span class="ss">0</span><span class="ot">-</span><span class="ss">9</span><span class="ot">]/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> SEP<span class="op">)</span></span>
-<span id="cb7-30"><a href="snp-and-indel-filtering.html#cb7-30" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Change asterisk indices to missing</span></span>
-<span id="cb7-31"><a href="snp-and-indel-filtering.html#cb7-31" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>GT1 <span class="op">==</span> asteriskIndex<span class="op">){</span></span>
-<span id="cb7-32"><a href="snp-and-indel-filtering.html#cb7-32" aria-hidden="true" tabindex="-1"></a>                GT1<span class="op">=</span><span class="st">&quot;.&quot;</span></span>
-<span id="cb7-33"><a href="snp-and-indel-filtering.html#cb7-33" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb7-34"><a href="snp-and-indel-filtering.html#cb7-34" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>GT2 <span class="op">==</span> asteriskIndex<span class="op">){</span></span>
-<span id="cb7-35"><a href="snp-and-indel-filtering.html#cb7-35" aria-hidden="true" tabindex="-1"></a>                GT2<span class="op">=</span><span class="st">&quot;.&quot;</span></span>
-<span id="cb7-36"><a href="snp-and-indel-filtering.html#cb7-36" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb7-37"><a href="snp-and-indel-filtering.html#cb7-37" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Reconstitute the GT</span></span>
-<span id="cb7-38"><a href="snp-and-indel-filtering.html#cb7-38" aria-hidden="true" tabindex="-1"></a>            NEWGT<span class="op">=</span>GT1 SEP GT2</span>
-<span id="cb7-39"><a href="snp-and-indel-filtering.html#cb7-39" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Reconstitute the complet FORMAT string for the sample if GT was changed</span></span>
-<span id="cb7-40"><a href="snp-and-indel-filtering.html#cb7-40" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>NEWGT <span class="op">!=</span> GT<span class="op">){</span></span>
-<span id="cb7-41"><a href="snp-and-indel-filtering.html#cb7-41" aria-hidden="true" tabindex="-1"></a>                NEWFORMAT<span class="op">=</span>NEWGT</span>
-<span id="cb7-42"><a href="snp-and-indel-filtering.html#cb7-42" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> <span class="op">(</span>j<span class="op">=</span><span class="dv">2</span><span class="op">;</span> j<span class="op">&lt;=</span>N<span class="op">;</span> j<span class="op">++){</span></span>
-<span id="cb7-43"><a href="snp-and-indel-filtering.html#cb7-43" aria-hidden="true" tabindex="-1"></a>                    NEWFORMAT<span class="op">=</span>NEWFORMAT <span class="st">&quot;:&quot;</span> FORMAT[j]</span>
-<span id="cb7-44"><a href="snp-and-indel-filtering.html#cb7-44" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb7-45"><a href="snp-and-indel-filtering.html#cb7-45" aria-hidden="true" tabindex="-1"></a>                <span class="dt">$i</span><span class="op">=</span>NEWFORMAT</span>
-<span id="cb7-46"><a href="snp-and-indel-filtering.html#cb7-46" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
-<span id="cb7-47"><a href="snp-and-indel-filtering.html#cb7-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb7-48"><a href="snp-and-indel-filtering.html#cb7-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb7-49"><a href="snp-and-indel-filtering.html#cb7-49" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="dt">$0</span></span>
-<span id="cb7-50"><a href="snp-and-indel-filtering.html#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb7-51"><a href="snp-and-indel-filtering.html#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="co"># If there is no asterisk in the ALT field, just print the line</span></span>
-<span id="cb7-52"><a href="snp-and-indel-filtering.html#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="dt">$5</span> <span class="op">!~</span> <span class="ot">/\</span><span class="sc">*</span><span class="ot">/</span><span class="op">{</span></span>
-<span id="cb7-53"><a href="snp-and-indel-filtering.html#cb7-53" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="dt">$0</span></span>
-<span id="cb7-54"><a href="snp-and-indel-filtering.html#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb7-55"><a href="snp-and-indel-filtering.html#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span><span class="op">{}</span></span></code></pre></div>
-<p>This script will convert this:</p>
-<table>
-<thead>
-<tr class="header">
-<th align="center">POS</th>
-<th align="center">REF</th>
-<th align="center">ALT</th>
-<th align="center">Sample1</th>
-<th align="center">Sample2</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">8</td>
-<td align="center"><code>A</code></td>
-<td align="center"><code>T,*</code></td>
-<td align="center">0/1</td>
-<td align="center">0/2</td>
-</tr>
-<tr class="even">
-<td align="center">12</td>
-<td align="center"><code>G</code></td>
-<td align="center"><code>*,ACC</code></td>
-<td align="center">0/0</td>
-<td align="center">1|2</td>
-</tr>
-</tbody>
-</table>
-<p>to</p>
-<table>
-<thead>
-<tr class="header">
-<th align="center">POS</th>
-<th align="center">REF</th>
-<th align="center">ALT</th>
-<th align="center">Sample1</th>
-<th align="center">Sample2</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">8</td>
-<td align="center"><code>A</code></td>
-<td align="center"><code>T,*</code></td>
-<td align="center">0/1</td>
-<td align="center">0/.</td>
-</tr>
-<tr class="even">
-<td align="center">12</td>
-<td align="center"><code>G</code></td>
-<td align="center"><code>*,ACC</code></td>
-<td align="center">0/0</td>
-<td align="center">.|2</td>
-</tr>
-</tbody>
-</table>
-<p>Then, multiallelic loci will be split into multiple records and MNVs broken down. When splitting multiallelic loci, the unknown allele (whose genotype is informed in another row) must be set to missing. All those actions can be done with the commands <code>bcftools norm --atomize --atom-overlaps \. -m -any --fasta-ref reference.fasta</code>.<br />
-<code>--atomize --fasta-ref reference.fasta</code>will decompose complex variants, <code>-m -any</code> will split multiallelic loci into multiple records and <code>--atom-overlaps \.</code> will use the <code>.</code> character (=missing genotype) for the overlapping variant.</p>
-<p>SNPs and INDELs present at the same loci will then be merged independently (SNPs with SNPs and INDELs with INDELs, but never SNPs with INDELs) with the command <code>bcftools norm -m +both</code>. The command <code>bcftools view -v snps</code>or <code>bcftools view -v indels</code> will finally allow to discriminate SNPs and INDELs in 2 different VCFs. Note that when keeping INDELs, overlapping deletions (<code>*</code>) must not be set to missing with the awk script, as they are INDELs.</p>
-<p>Since half-missing genotypes (ex: <code>./1</code>, <code>0|.</code>) can be tricky to handle for some softwares, one can convert them to fully missing with bcftools. Because bcftools does not deal with half-missing phased genotypes (<code>0|.</code>), the phased genotypes must first be set to unphased:<br />
-<code>bcftools +setGT -- -t a -n u | bcftools +setGT -- -t ./x -n .</code></p>
-<p>Finally, because some known genotypes are set to missing, it is possible that some alleles are not present in the population anymore. These loci must be filtered out with <code>bcftools norm -m -any in.vcf.gz | bcftools +fill-tags | bcftools view --min-ac 1 | bcftools norm -m +any</code>. Multiallelic loci are split and then filtered for allele count because one allele can be lost while the other remains. For INDELs filtering, an additional <code>bcftools view -v indels</code> command must be used to remove loci that contained both indel and overlapping variant (<code>ALT = *,CAA</code>) and where the indel was set to missing, leaving only <code>*</code> as alternative allele.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="snp-and-indel-filtering.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only SNPs</span></span>
-<span id="cb8-2"><a href="snp-and-indel-filtering.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view in.vcf.gz <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-f</span> setAsteriskMissing.awk <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-3"><a href="snp-and-indel-filtering.html#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> norm <span class="at">--atomize</span> <span class="at">--atom-overlaps</span> <span class="dt">\.</span> <span class="at">-m</span> <span class="at">-any</span> <span class="at">--fasta-ref</span> reference.fasta <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-4"><a href="snp-and-indel-filtering.html#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> norm <span class="at">-m</span> +both <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-5"><a href="snp-and-indel-filtering.html#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> view <span class="at">-v</span> snps <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-6"><a href="snp-and-indel-filtering.html#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> +setGT <span class="at">--</span> <span class="at">-t</span> a <span class="at">-n</span> u <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-7"><a href="snp-and-indel-filtering.html#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> +setGT <span class="at">--</span> <span class="at">-t</span> ./x <span class="at">-n</span> . <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-8"><a href="snp-and-indel-filtering.html#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> norm <span class="at">-m</span> <span class="at">-any</span> <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-9"><a href="snp-and-indel-filtering.html#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> +fill-tags <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-10"><a href="snp-and-indel-filtering.html#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> view <span class="at">--min-ac</span> 1 <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-11"><a href="snp-and-indel-filtering.html#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> norm <span class="at">-m</span> +any</span>
-<span id="cb8-12"><a href="snp-and-indel-filtering.html#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="snp-and-indel-filtering.html#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="snp-and-indel-filtering.html#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="snp-and-indel-filtering.html#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only INDELs</span></span>
-<span id="cb8-16"><a href="snp-and-indel-filtering.html#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> norm <span class="at">--atomize</span> <span class="at">--atom-overlaps</span> <span class="dt">\.</span> <span class="at">-m</span> <span class="at">-any</span> <span class="at">--fasta-ref</span> reference.fasta in.vcf.gz <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-17"><a href="snp-and-indel-filtering.html#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> norm <span class="at">-m</span> +both <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-18"><a href="snp-and-indel-filtering.html#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> view <span class="at">-v</span> indels <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-19"><a href="snp-and-indel-filtering.html#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> +setGT <span class="at">--</span> <span class="at">-t</span> a <span class="at">-n</span> u <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-20"><a href="snp-and-indel-filtering.html#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> +setGT <span class="at">--</span> <span class="at">-t</span> ./x <span class="at">-n</span> . <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-21"><a href="snp-and-indel-filtering.html#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> norm <span class="at">-m</span> <span class="at">-any</span> <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-22"><a href="snp-and-indel-filtering.html#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> +fill-tags <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-23"><a href="snp-and-indel-filtering.html#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> view <span class="at">--min-ac</span> 1 <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-24"><a href="snp-and-indel-filtering.html#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> norm <span class="at">-m</span> +any <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb8-25"><a href="snp-and-indel-filtering.html#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bcftools</span> view <span class="at">-v</span> indels</span></code></pre></div>
+<div id="split-snps-and-indels" class="section level2 hasAnchor" number="3.5">
+<h2><span class="header-section-number">3.5</span> Split SNPs and INDELs<a href="snp-and-indel-filtering.html#split-snps-and-indels" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In raw VCFs, SNPs and INDELs can be hard to discriminate because they can be located at the same loci (called mixed loci). Some raw VCFs also contains MNVs (= Multiple Nucleotide Variants), that can be broken down in multiple consecutive SNPs. This makes the dicrimination between SNPs and INDELs very complex. Since those mixed loci are hard to analyse, we filter them out. The raw VCF will be split in 2 VCF: one containing only strict SNPs (no INDEL present at these loci in the population), one containing only strict INDELs (no SNP present at these loci in the population). Non variant positions, refered as <code>REF</code> type will be kept.</p>
+<p>For SNPs, all sites with <code>*</code> as genotype (= position is overlapping a deletion) or not <code>SNP</code> or <code>REF</code> as type will be excluded with the command <code>'ALT="*" || (type!="snp" &amp;&amp; type!="ref")'</code>. Same for INDELs, except <code>*</code>gontypes are kept: <code>'(type!="indel" &amp;&amp; type!="ref")'</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="snp-and-indel-filtering.html#cb9-1" tabindex="-1"></a><span class="co"># Keep only SNPs</span></span>
+<span id="cb9-2"><a href="snp-and-indel-filtering.html#cb9-2" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-e</span> <span class="st">&#39;ALT=&quot;*&quot; || (type!=&quot;snp&quot; &amp;&amp; type!=&quot;ref&quot;)&#39;</span></span>
+<span id="cb9-3"><a href="snp-and-indel-filtering.html#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="snp-and-indel-filtering.html#cb9-4" tabindex="-1"></a><span class="co"># Keep only INDELs</span></span>
+<span id="cb9-5"><a href="snp-and-indel-filtering.html#cb9-5" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-e</span> <span class="st">&#39;(type!=&quot;indel&quot; &amp;&amp; type!=&quot;ref&quot;)&#39;</span></span></code></pre></div>
 </div>
+<div id="filter-variant-position" class="section level2 hasAnchor" number="3.6">
+<h2><span class="header-section-number">3.6</span> Filter variant position<a href="snp-and-indel-filtering.html#filter-variant-position" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Non variant position can be filtered out based on allele count (AC - must be up to date using fill-tags).</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="snp-and-indel-filtering.html#cb10-1" tabindex="-1"></a><span class="co"># Keep only variant positions</span></span>
+<span id="cb10-2"><a href="snp-and-indel-filtering.html#cb10-2" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">--min-ac</span> 1</span></code></pre></div>
 </div>
-<div id="filtering-biallelic-sites" class="section level2 hasAnchor" number="3.4">
-<h2><span class="header-section-number">3.4</span> Filtering biallelic sites<a href="snp-and-indel-filtering.html#filtering-biallelic-sites" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="filtering-biallelic-sites" class="section level2 hasAnchor" number="3.7">
+<h2><span class="header-section-number">3.7</span> Filtering biallelic sites<a href="snp-and-indel-filtering.html#filtering-biallelic-sites" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Biallelic loci can be kept with the <code>bcftools view</code> command, keeping loci with minimum 2 alleles (<code>-m2</code>) and maximum 2 alleles (<code>-M2</code>).</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="snp-and-indel-filtering.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter biallelic (minimum and maximum 2 alleles per loci)</span></span>
-<span id="cb9-2"><a href="snp-and-indel-filtering.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-m2</span> <span class="at">-M2</span> in.vcf.gz</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="snp-and-indel-filtering.html#cb11-1" tabindex="-1"></a><span class="co"># Filter biallelic (minimum and maximum 2 alleles per loci)</span></span>
+<span id="cb11-2"><a href="snp-and-indel-filtering.html#cb11-2" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-m2</span> <span class="at">-M2</span> in.vcf.gz</span></code></pre></div>
 </div>
-<div id="filter-missing-genotypes" class="section level2 hasAnchor" number="3.5">
-<h2><span class="header-section-number">3.5</span> Filter missing genotypes<a href="snp-and-indel-filtering.html#filter-missing-genotypes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Loci with a fraction of missing genotypes too high can be removed from the VCF. This step must be done after the sample filtering, because it changes with the number of samples.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="snp-and-indel-filtering.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only sotes with more than 99% of genotyped samples</span></span>
-<span id="cb10-2"><a href="snp-and-indel-filtering.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-i</span> <span class="st">&#39;F_MISSING&lt;0.01&#39;</span></span></code></pre></div>
+<div id="filtering-the-maf" class="section level2 hasAnchor" number="3.8">
+<h2><span class="header-section-number">3.8</span> Filtering the MAF<a href="snp-and-indel-filtering.html#filtering-the-maf" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="snp-and-indel-filtering.html#cb12-1" tabindex="-1"></a><span class="co"># Sites with a MAF lower are removed</span></span>
+<span id="cb12-2"><a href="snp-and-indel-filtering.html#cb12-2" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">--min-af</span> 0.05:minor</span></code></pre></div>
 </div>
-<div id="filtering-the-maf" class="section level2 hasAnchor" number="3.6">
-<h2><span class="header-section-number">3.6</span> Filtering the MAF<a href="snp-and-indel-filtering.html#filtering-the-maf" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="snp-and-indel-filtering.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sites with a MAF lower are removed</span></span>
-<span id="cb11-2"><a href="snp-and-indel-filtering.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">--min-af</span> 0.05:minor</span></code></pre></div>
-</div>
-<div id="annotate-variant-id" class="section level2 hasAnchor" number="3.7">
-<h2><span class="header-section-number">3.7</span> Annotate variant ID<a href="snp-and-indel-filtering.html#annotate-variant-id" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="annotate-variant-id" class="section level2 hasAnchor" number="3.9">
+<h2><span class="header-section-number">3.9</span> Annotate variant ID<a href="snp-and-indel-filtering.html#annotate-variant-id" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Variants ID can be annotated at any step of the filtering process, but it’s generally the lkast step of the pipeline. ID annotation must be done to be able to discriminate variants.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="snp-and-indel-filtering.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set variant ID to rs_Chr_Pos_etc...</span></span>
-<span id="cb12-2"><a href="snp-and-indel-filtering.html#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> annotate <span class="at">--set-id</span> <span class="st">&#39;rs_%CHROM\_%POS\_%REF\_%FIRST_ALT&#39;</span> </span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="snp-and-indel-filtering.html#cb13-1" tabindex="-1"></a><span class="co"># Set variant ID to rs_Chr_Pos_etc...</span></span>
+<span id="cb13-2"><a href="snp-and-indel-filtering.html#cb13-2" tabindex="-1"></a><span class="ex">bcftools</span> annotate <span class="at">--set-id</span> <span class="st">&#39;rs_%CHROM\_%POS\_%REF\_%FIRST_ALT&#39;</span> </span></code></pre></div>
 </div>
-<div id="change-chromosome-names" class="section level2 hasAnchor" number="3.8">
-<h2><span class="header-section-number">3.8</span> Change chromosome names<a href="snp-and-indel-filtering.html#change-chromosome-names" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="change-chromosome-names" class="section level2 hasAnchor" number="3.10">
+<h2><span class="header-section-number">3.10</span> Change chromosome names<a href="snp-and-indel-filtering.html#change-chromosome-names" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Some software such as PLINK requires integers as chromosome names. Chromosome names can be changed with <code>bcftools annotate --rename-chrs</code></p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="snp-and-indel-filtering.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create file that will contain name substitutions</span></span>
-<span id="cb13-2"><a href="snp-and-indel-filtering.html#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span></span>
-<span id="cb13-3"><a href="snp-and-indel-filtering.html#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome1 1&quot;</span></span>
-<span id="cb13-4"><a href="snp-and-indel-filtering.html#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome2 2&quot;</span></span>
-<span id="cb13-5"><a href="snp-and-indel-filtering.html#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome3 3&quot;</span></span>
-<span id="cb13-6"><a href="snp-and-indel-filtering.html#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome4 4&quot;</span></span>
-<span id="cb13-7"><a href="snp-and-indel-filtering.html#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome5 5&quot;</span></span>
-<span id="cb13-8"><a href="snp-and-indel-filtering.html#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome6 6&quot;</span></span>
-<span id="cb13-9"><a href="snp-and-indel-filtering.html#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome7 7&quot;</span></span>
-<span id="cb13-10"><a href="snp-and-indel-filtering.html#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome8 8&quot;</span></span>
-<span id="cb13-11"><a href="snp-and-indel-filtering.html#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome9 9&quot;</span></span>
-<span id="cb13-12"><a href="snp-and-indel-filtering.html#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome10 10&quot;</span></span>
-<span id="cb13-13"><a href="snp-and-indel-filtering.html#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome11 11&quot;</span></span>
-<span id="cb13-14"><a href="snp-and-indel-filtering.html#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome12 12&quot;</span></span>
-<span id="cb13-15"><a href="snp-and-indel-filtering.html#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome13 13&quot;</span></span>
-<span id="cb13-16"><a href="snp-and-indel-filtering.html#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome14 14&quot;</span></span>
-<span id="cb13-17"><a href="snp-and-indel-filtering.html#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome15 15&quot;</span></span>
-<span id="cb13-18"><a href="snp-and-indel-filtering.html#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome16 16&quot;</span><span class="kw">)</span> <span class="op">&gt;</span> ChrNames.txt</span>
-<span id="cb13-19"><a href="snp-and-indel-filtering.html#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Change chr names with bcftools</span></span>
-<span id="cb13-20"><a href="snp-and-indel-filtering.html#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> annotate <span class="at">--rename-chrs</span> ChrNames.txt in.vcf.gz</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="snp-and-indel-filtering.html#cb14-1" tabindex="-1"></a><span class="co"># Create file that will contain name substitutions</span></span>
+<span id="cb14-2"><a href="snp-and-indel-filtering.html#cb14-2" tabindex="-1"></a><span class="kw">(</span></span>
+<span id="cb14-3"><a href="snp-and-indel-filtering.html#cb14-3" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome1 1&quot;</span></span>
+<span id="cb14-4"><a href="snp-and-indel-filtering.html#cb14-4" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome2 2&quot;</span></span>
+<span id="cb14-5"><a href="snp-and-indel-filtering.html#cb14-5" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome3 3&quot;</span></span>
+<span id="cb14-6"><a href="snp-and-indel-filtering.html#cb14-6" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome4 4&quot;</span></span>
+<span id="cb14-7"><a href="snp-and-indel-filtering.html#cb14-7" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome5 5&quot;</span></span>
+<span id="cb14-8"><a href="snp-and-indel-filtering.html#cb14-8" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome6 6&quot;</span></span>
+<span id="cb14-9"><a href="snp-and-indel-filtering.html#cb14-9" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome7 7&quot;</span></span>
+<span id="cb14-10"><a href="snp-and-indel-filtering.html#cb14-10" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome8 8&quot;</span></span>
+<span id="cb14-11"><a href="snp-and-indel-filtering.html#cb14-11" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome9 9&quot;</span></span>
+<span id="cb14-12"><a href="snp-and-indel-filtering.html#cb14-12" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome10 10&quot;</span></span>
+<span id="cb14-13"><a href="snp-and-indel-filtering.html#cb14-13" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome11 11&quot;</span></span>
+<span id="cb14-14"><a href="snp-and-indel-filtering.html#cb14-14" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome12 12&quot;</span></span>
+<span id="cb14-15"><a href="snp-and-indel-filtering.html#cb14-15" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome13 13&quot;</span></span>
+<span id="cb14-16"><a href="snp-and-indel-filtering.html#cb14-16" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome14 14&quot;</span></span>
+<span id="cb14-17"><a href="snp-and-indel-filtering.html#cb14-17" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome15 15&quot;</span></span>
+<span id="cb14-18"><a href="snp-and-indel-filtering.html#cb14-18" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;chromosome16 16&quot;</span><span class="kw">)</span> <span class="op">&gt;</span> ChrNames.txt</span>
+<span id="cb14-19"><a href="snp-and-indel-filtering.html#cb14-19" tabindex="-1"></a><span class="co"># Change chr names with bcftools</span></span>
+<span id="cb14-20"><a href="snp-and-indel-filtering.html#cb14-20" tabindex="-1"></a><span class="ex">bcftools</span> annotate <span class="at">--rename-chrs</span> ChrNames.txt in.vcf.gz</span></code></pre></div>
 
 </div>
 </div>

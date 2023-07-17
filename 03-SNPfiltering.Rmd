@@ -1,235 +1,131 @@
 # SNP and INDEL filtering
 
-This chapter contains bcftools commands to filter multi sample VCF files. These commands were tested using bcftools 1.15.1. 
-bcftools manual:
-[https://samtools.github.io/bcftools/bcftools.html](https://samtools.github.io/bcftools/bcftools.html)  
+This chapter contains bcftools commands to filter multi sample VCF files. These commands were tested using bcftools 1.15.1. bcftools manual: <https://samtools.github.io/bcftools/bcftools.html>
 
-The order in which the commands are executed must be respected. The raw VCF should first be filtered on the genotyping quality, then a subset of samples can be filtered if needed and finally several filters can be applied on the variants dataset (missing genotype filters, frequency filters, biallelic filters, etc). 
+The order in which the commands are executed must be respected. The raw VCF should first be filtered on the genotyping quality, then a subset of samples can be filtered if needed and finally several filters can be applied on the variants dataset (missing genotype filters, frequency filters, biallelic filters, etc). It is better to work with all-position VCFs, and filter variant position only in the end.
 
 WARNING: Each filter must be indicated in the file name. Example: `full2489Samples.DP10.GQ20.SNPs.99pNonMissing.Biallelic.MAF5.vcf.gz`
 
-The different commands can be combined with `|`. To accelerate the compression of the output VCF, the command ```bcftools view -Oz -o out.vcf.gz --threads 8```can be used to parallelize the compression of the file. 
+The different commands can be combined with `|`. To accelerate the compression of the output VCF, the command `bcftools view -Oz -o out.vcf.gz --threads 8`can be used to parallelize the compression of the file.
 
 ## Quality filtering
 
-Quality filtering is the first step to process. It includes depth filtering, genotype quality or any other filters based on quality metrics (QUAL, allele balance, etc). Loci that does not pass the thresholds must be set to missing. The allele count for each loci must then be updated `bcftools +fill-tags` and only loci with allele count superior to 0 must be kept `bcftools view --min-ac 1`. 
+Quality filtering is the first step to process. It includes depth filtering, genotype quality or any other filters based on quality metrics (QUAL, allele balance, etc). Loci that does not pass the thresholds must be set to missing. The allele count for each loci must then be updated `bcftools +fill-tags`.
 
-``` {bash, eval=F}
+```{bash, eval=F}
 # Depth filtering 10X
 bcftools +setGT in.vcf.gz -- -t q -n . -e 'FMT/DP>=10' | \
-  bcftools +fill-tags | \
-  bcftools view --min-ac 1
+  bcftools +fill-tags
 
 # Genotype quality filtering 20
 bcftools +setGT in.vcf.gz -- -t q -n . -e 'FMT/GQ>=20' | \
-  bcftools +fill-tags | \
-  bcftools view --min-ac 1
+  bcftools +fill-tags
 ```
 
 ## Sample filtering
 
-If a subset of sample must be extracted from the VCF, this is the second step to process. The list of sample to keep must be in txt format, 1 sample per line. Because some variants might be present in the total population but absent from the subset, multiallelic loci must be split into biallelic records before sample filtering. Then, sample are filtered and only loci with an allele count superior to 0 will be kept. After that, variants located at the same loci will be re-merged into multiallelic variants. 
+If a subset of sample must be extracted from the VCF, this is the second step to process. The list of sample to keep must be in txt format, 1 sample per line. Because some variants might be present in the total population but absent from the subset, multiallelic loci must be split into biallelic records before sample filtering. Then, sample are filtered and only loci with an allele count superior to 0 will be kept. After that, variants located at the same loci will be re-merged into multiallelic variants.
 
-The ```bcftools norm -m -any``` command splits multiallelic records  
-The ```bcftools view --samples-file```command filters samples from a txt file  
-The ```bcftools +fill-tags``` command updates the allele count value  
-The ```bcftools view --min-ac 1``` keeps only sites with a minimum allele count of 1  
-The ```bcftools norm -m +any``` command merge variant located at the same position
+The `bcftools norm -m -any` command splits multiallelic records\
+The `bcftools view --samples-file`command filters samples from a txt file\
+The `bcftools +fill-tags` command updates the allele count value\
+The `bcftools view --min-ac 1` keeps only sites with a minimum allele count of 1\
+The `bcftools norm -m +any` command merge variant located at the same position
 
-``` {bash, eval=F}
+```{bash, eval=F}
 # Sample filtering
 bcftools norm -m -any in.vcf.gz | \
   bcftools view --samples-file samples.txt | \
   bcftools +fill-tags | \
-  bcftools view --min-ac 1 | \
+  bcftools view --min-ac 1 | \  # This command filter out non variant loci
   bcftools norm -m +any
+```
+
+## Missing genotype filtering
+
+Multiple filters can be done on missing genotypes. First we can filter out samples having less than X% of informed loci. Fill-tags must be used since the number of samples changes.
+
+```{bash, eval=F}
+# Get for each sample the number of loci with missing genotype
+bcftools stats -s - $PREFIX.DP10.GQ20.vcf.gz | grep -E ^PSC | cut -f3,14 > $PREFIX.DP10.GQ20.imiss
+# Get the total number of sites in the VCF
+nSites=$(bcftools +counts $PREFIX.DP10.GQ20.vcf.gz | grep "Number of sites" | rev | cut -d " " -f 1 | rev)
+# List samples with less than 20% missing genotypes
+awk -v nSites=$nSites '{if ($2 / nSites <= 0.2) print $1}' $PREFIX.DP10.GQ20.imiss > Samples.Mind20
+# Filter samples
+bcftools view --samples-file Samples.Mind20 $PREFIX.DP10.GQ20.vcf.gz | \
+    bcftools +fill-tags
+```
+
+Then we can filter loci that are not informed for enough samples (ex: filter out loci that are informed for less than 99% of the samples).
+
+```{bash, eval=F}
+# Keep only sites with more than 99% of genotyped samples
+bcftools view -i 'F_MISSING<0.01'
+```
+
+## Filter on excess of heterozygosity
+
+Regions duplicated in some samples but in a single copy in the reference genome will often result in excess of heterozygosity. These regions can therefore be filtered with the ExcHet field, which tests for excess of heterozygosity and is calculated with fill-tags. This filter is usefull to avoid artificial increase in diversity caused by duplicated regions.
+
+```{bash, eval=F}
+bcftools +fill-tags | bcftools view -e 'ExcHet < 0.99'
 ```
 
 ## Split SNPs and INDELs
 
-In raw VCFs, SNPs and INDELs can be hard to discriminate because they can be located at the same loci (called mixed loci). Some raw VCFs also contains MNVs (= Multiple Nucleotide Variants), that can be broken down in multiple consecutive SNPs. 
-This makes the dicrimination between SNPs and INDELs very complex. 
+In raw VCFs, SNPs and INDELs can be hard to discriminate because they can be located at the same loci (called mixed loci). Some raw VCFs also contains MNVs (= Multiple Nucleotide Variants), that can be broken down in multiple consecutive SNPs. This makes the dicrimination between SNPs and INDELs very complex. Since those mixed loci are hard to analyse, we filter them out. The raw VCF will be split in 2 VCF: one containing only strict SNPs (no INDEL present at these loci in the population), one containing only strict INDELs (no SNP present at these loci in the population). Non variant positions, refered as `REF` type will be kept.
 
-This discrimination can be done in 2 ways:
+For SNPs, all sites with `*` as genotype (= position is overlapping a deletion) or not `SNP` or `REF` as type will be excluded with the command `'ALT="*" || (type!="snp" && type!="ref")'`. Same for INDELs, except `*`gontypes are kept: `'(type!="indel" && type!="ref")'`.
 
-* **The strict method**
-
-The raw VCF will be split in 2 VCF: one containing only strict SNPs (no INDEL present at these loci in the population), one containing only strict INDELs (no SNP present at these loci in the population). The mixed loci will be filtered out. 
-
-* **The complex method**
-
-Another method is to set every non wanted variant as missing. The final SNP VCF will contain all the SNPs present in the population, and the non filtered INDELs (that is the one present at mixed loci) will be set to missing. It will be the other way around for the INDEL VCF. 
-
-#### /!\\ Strict method must be favored {-}
-
-### The strict method {-}
-
-For SNPs, all sites with `*` as genotype (= position is overlapping a deletion) or not `SNP`as type will be excluded with the command `bcftools view -e 'ALT="*" || type!="snp"'`. 
-For INDELs, loci containing SNPs can just be removed with `bcftools view -V snps,mnps,bnd,other`. `*` alleles will be kept as they should be INDELs. 
-
-``` {bash, eval=F}
+```{bash, eval=F}
 # Keep only SNPs
-bcftools view -e 'ALT="*" || type!="snp"'
+bcftools view -e 'ALT="*" || (type!="snp" && type!="ref")'
 
 # Keep only INDELs
-bcftools view -V snps,mnps,bnd,other
+bcftools view -e '(type!="indel" && type!="ref")'
 ```
 
-### The complex method {-}
+## Filter variant position
 
-In order to use SNPs that are present at complex loci, INDELs present at those same loci must be set to missing. Since overlapping deletions (asterisk symbol, see https://gatk.broadinstitute.org/hc/en-us/articles/360035531912-Spanning-or-overlapping-deletions-allele- for a definition) are part of INDELs, it also have to be set to missing. However, bcftools does not handle well overlapping deletions. One can use an awk script to set every `*` allele to missing, with the command `awk -f setAsterisksToMissing.awk`, with `setAsterisksToMissing.awk` beeing this script:
-```{awk, eval=F}
-BEGIN{FS="\t"}
+Non variant position can be filtered out based on allele count (AC - must be up to date using fill-tags). 
 
-# If field 5 (ALT column) contains *
-$5 ~ /\*/{
-    # Define output field separator as tab
-    OFS="\t"
-    # Split the ALT field by comma to have each individual alt allele
-    split($5, ALT, ",")
-    # For i in 1:len(All alt alleles)
-    for (i in ALT){
-        # If the alt allele contains *
-        if (ALT[i] ~ /\*/){
-            asteriskIndex=i
-        }
-    }
-    # Subsitute each asteriskIndex by "." (missing genotype)
-    for (i=10; i<=NF; i++){
-        # Extract the genotype
-        N=split($i, FORMAT, ":")
-        GT=FORMAT[1]
-        # If the genotype contains the asterisk index
-        if (GT ~ asteriskIndex){
-            # Split the genotypes by / or | to access each haplotype independentely
-            split(GT, GTarray, "[/|]")
-            GT1=GTarray[1]
-            GT2=GTarray[2]
-            # remove oll numbers from the genotype to know the seperator ( | phased or / unphased)
-            SEP=GT
-            gsub(/[0-9]/, "", SEP)
-            # Change asterisk indices to missing
-            if (GT1 == asteriskIndex){
-                GT1="."
-            }
-            if (GT2 == asteriskIndex){
-                GT2="."
-            }
-            # Reconstitute the GT
-            NEWGT=GT1 SEP GT2
-            # Reconstitute the complet FORMAT string for the sample if GT was changed
-            if (NEWGT != GT){
-                NEWFORMAT=NEWGT
-                for (j=2; j<=N; j++){
-                    NEWFORMAT=NEWFORMAT ":" FORMAT[j]
-                }
-                $i=NEWFORMAT
-            }
-        }
-    }
-    print $0
-}
-# If there is no asterisk in the ALT field, just print the line
-$5 !~ /\*/{
-    print $0
-}
-END{}
+```{bash, eval=F}
+# Keep only variant positions
+bcftools view --min-ac 1
 ```
 
-This script will convert this:
-
-| POS | REF | ALT | Sample1 | Sample2 |
-|:---:|:---:|:---:|:-------:|:-------:|
-|  8  |  `A`  | `T,*`   |   0/1   |   0/2   |
-|  12 |  `G`  | `*,ACC` |   0/0   |   1\|2  |
-
-to
-
-| POS | REF | ALT | Sample1 | Sample2 |
-|:---:|:---:|:---:|:-------:|:-------:|
-|  8  |  `A`  | `T,*`   |   0/1   |   0/.   |
-|  12 |  `G`  | `*,ACC` |   0/0   |   .\|2  |
-
-
-Then, multiallelic loci will be split into multiple records and MNVs broken down. When splitting multiallelic loci, the unknown allele (whose genotype is informed in another row) must be set to missing. All those actions can be done with the commands `bcftools norm --atomize --atom-overlaps \. -m -any --fasta-ref reference.fasta`.  
-`--atomize --fasta-ref reference.fasta`will decompose complex variants, `-m -any` will split multiallelic loci into multiple records and `--atom-overlaps \.` will use the `.` character (=missing genotype) for the overlapping variant. 
-
-
-SNPs and INDELs present at the same loci will then be merged independently (SNPs with SNPs and INDELs with INDELs, but never SNPs with INDELs) with the command `bcftools norm -m +both`. The command `bcftools view -v snps`or `bcftools view -v indels` will finally allow to discriminate SNPs and INDELs in 2 different VCFs. Note that when keeping INDELs, overlapping deletions (`*`) must not be set to missing with the awk script, as they are INDELs. 
-
-
-Since half-missing genotypes (ex: `./1`, `0|.`) can be tricky to handle for some softwares, one can convert them to fully missing with bcftools. Because bcftools does not deal with half-missing phased genotypes (`0|.`), the phased genotypes must first be set to unphased:  
-```bcftools +setGT -- -t a -n u | bcftools +setGT -- -t ./x -n . ```
-
-Finally, because some known genotypes are set to missing, it is possible that some alleles are not present in the population anymore. These loci must be filtered out with `bcftools norm -m -any in.vcf.gz | bcftools +fill-tags | bcftools view --min-ac 1 | bcftools norm -m +any`. Multiallelic loci are split and then filtered for allele count because one allele can be lost while the other remains. For INDELs filtering, an additional `bcftools view -v indels` command must be used to remove loci that contained both indel and overlapping variant (`ALT = *,CAA`) and where the indel was set to missing, leaving only `*` as alternative allele.
-
-``` {bash, eval=F}
-# Keep only SNPs
-bcftools view in.vcf.gz | awk -f setAsteriskMissing.awk | \
-    bcftools norm --atomize --atom-overlaps \. -m -any --fasta-ref reference.fasta | \
-    bcftools norm -m +both | \
-    bcftools view -v snps | \
-    bcftools +setGT -- -t a -n u | \
-    bcftools +setGT -- -t ./x -n . | \
-    bcftools norm -m -any | \
-    bcftools +fill-tags | \
-    bcftools view --min-ac 1 | \
-    bcftools norm -m +any
-
-
-
-# Keep only INDELs
-bcftools norm --atomize --atom-overlaps \. -m -any --fasta-ref reference.fasta in.vcf.gz | \
-    bcftools norm -m +both | \
-    bcftools view -v indels | \
-    bcftools +setGT -- -t a -n u | \
-    bcftools +setGT -- -t ./x -n . | \
-    bcftools norm -m -any | \
-    bcftools +fill-tags | \
-    bcftools view --min-ac 1 | \
-    bcftools norm -m +any | \
-    bcftools view -v indels
-```
 
 ## Filtering biallelic sites
 
-Biallelic loci can be kept with the `bcftools view` command, keeping loci with minimum 2 alleles (`-m2`) and maximum 2 alleles (`-M2`). 
+Biallelic loci can be kept with the `bcftools view` command, keeping loci with minimum 2 alleles (`-m2`) and maximum 2 alleles (`-M2`).
 
-``` {bash, eval=F}
+```{bash, eval=F}
 # Filter biallelic (minimum and maximum 2 alleles per loci)
 bcftools view -m2 -M2 in.vcf.gz
 ```
 
-## Filter missing genotypes
-
-Loci with a fraction of missing genotypes too high can be removed from the VCF. This step must be done after the sample filtering, because it changes with the number of samples. 
-
-``` {bash, eval=F}
-# Keep only sotes with more than 99% of genotyped samples
-bcftools view -i 'F_MISSING<0.01'
-```
-
 ## Filtering the MAF
 
-``` {bash, eval=F}
+```{bash, eval=F}
 # Sites with a MAF lower are removed
 bcftools view --min-af 0.05:minor
 ```
 
 ## Annotate variant ID
 
-Variants ID can be annotated at any step of the filtering process, but it's generally the lkast step of the pipeline. ID annotation must be done to be able to discriminate variants. 
+Variants ID can be annotated at any step of the filtering process, but it's generally the lkast step of the pipeline. ID annotation must be done to be able to discriminate variants.
 
-``` {bash, eval=F}
+```{bash, eval=F}
 # Set variant ID to rs_Chr_Pos_etc...
 bcftools annotate --set-id 'rs_%CHROM\_%POS\_%REF\_%FIRST_ALT' 
 ```
 
 ## Change chromosome names
 
-Some software such as PLINK requires integers as chromosome names. Chromosome names can be changed with ```bcftools annotate --rename-chrs``` 
+Some software such as PLINK requires integers as chromosome names. Chromosome names can be changed with `bcftools annotate --rename-chrs`
 
-``` {bash, eval=F}
+```{bash, eval=F}
 # Create file that will contain name substitutions
 (
   echo "chromosome1 1"
